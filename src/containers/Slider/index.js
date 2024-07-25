@@ -7,9 +7,11 @@ import "./style.scss";
 const Slider = () => {
   const { data } = useData();
   const [index, setIndex] = useState(0);
-  const byDateDesc = data?.focus.sort((evtA, evtB) =>
+  const byDateDesc = data?.focus.sort((evtA, evtB) => 
+    
     new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
   );
+
   const nextCard = () =>  {
     if (byDateDesc) { // vérifie si byDateDesc est défini
       setTimeout(
@@ -42,12 +44,12 @@ const Slider = () => {
           </div>
           <div className="SlideCard__paginationContainer">
             <div className="SlideCard__pagination">
-              {byDateDesc.map((_, radioIdx) => (
+              {byDateDesc.map((dot, radioIdx) => (
                 <input
-                  key={`${event.id}`}
+                  key={dot.title}
                   type="radio"
                   name="radio-button"
-                  checked={idx === radioIdx}
+                  checked={index === radioIdx}
                 />
               ))}
             </div>
