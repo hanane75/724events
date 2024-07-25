@@ -10,21 +10,23 @@ const Slider = () => {
   const byDateDesc = data?.focus.sort((evtA, evtB) =>
     new Date(evtA.date) < new Date(evtB.date) ? -1 : 1
   );
-  const nextCard = () => {
-    setTimeout(
-      () => setIndex(index < byDateDesc.length - 1 ? index + 1 : 0),
-      5000
-    );
+  const nextCard = () =>  {
+    if (byDateDesc) { // vérifie si byDateDesc est défini
+      setTimeout(
+        () => setIndex(index < byDateDesc.length - 1 ? index + 1 : 0),
+        5000
+      );
+    }
   };
   useEffect(() => {
     nextCard();
-  }, [index]);
-
+  });
   return (
     <div className="SlideCardList">
       {byDateDesc?.map((event, idx) => (
-        <div key={event.id}> 
+        <>
           <div
+            key={event.title}
             className={`SlideCard SlideCard--${
               index === idx ? "display" : "hide"
             }`}
@@ -45,13 +47,12 @@ const Slider = () => {
                   key={`${event.id}`}
                   type="radio"
                   name="radio-button"
-                  checked={index === radioIdx}
-                  readOnly
+                  checked={idx === radioIdx}
                 />
               ))}
             </div>
           </div>
-        </div>
+        </>
       ))}
     </div>
   );

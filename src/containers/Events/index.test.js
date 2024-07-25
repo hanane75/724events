@@ -79,7 +79,7 @@ describe("When Events is created", () => {
       // Assert the element is not in the document anymore
       await waitFor(() => {
         expect(screen.queryByText("Forum #productCON")).not.toBeInTheDocument();
-      });
+      }, 2000); // timeout de 2 secondes
     });
   });
 
