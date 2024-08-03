@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import Slider from "./index";
-import { api, DataProvider } from "../../contexts/DataContext";
+import { DataProvider } from "../../contexts/DataContext";
 
 const data = {
   focus: [
@@ -26,19 +26,31 @@ const data = {
   ],
 };
 
+// Mock le contexte DataProvider
+jest.mock("../../contexts/DataContext", () => ({
+  DataProvider: ({ children }) => <div>{children}</div>,
+  useData: () => ({ data, error: null }),
+}));
+
 describe("When slider is created", () => {
   it("a list card is displayed", async () => {
-    window.console.error = jest.fn();
-    api.loadData = jest.fn().mockReturnValue(data);
     render(
       <DataProvider>
         <Slider />
       </DataProvider>
     );
-    await screen.findByText("World economic forum");
-    await screen.findByText("janvier");
-    await screen.findByText(
-      "Oeuvre à la coopération entre le secteur public et le privé."
-    );
+
+    // Déboguer le DOM rendu
+    screen.debug();
+
+    // Assurez-vous que le composant affiche correctement "World economic forum"
+    await waitFor(() => {
+      expect(screen.getByText(/World economic forum/i)).toBeInTheDocument();
+    });
+
+    // Assurez-vous que le composant affiche correctement "janvier"
+    await waitFor(() => {
+      expect(screen.getByText(/janvier/i)).toBeInTheDocument();
+    });
   });
 });

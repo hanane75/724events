@@ -42,23 +42,27 @@ describe("When Events is created", () => {
         <Events />
       </DataProvider>
     );
-    await screen.findByText("avril");
+
+    const elements = await screen.findAllByText("avril");
+    expect(elements.length).toBeGreaterThan(0);
   });
 
   describe("and an error occurred", () => {
     it("an error message is displayed", async () => {
-      api.loadData = jest.fn().mockRejectedValue();
+      api.loadData = jest.fn().mockRejectedValue(new Error('Network Error'));
       render(
         <DataProvider>
           <Events />
         </DataProvider>
       );
-      expect(await screen.findByText("An error occurred")).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText("An error occurred")).toBeInTheDocument();
+      });
     });
   });
 
   describe("and we select a category", () => {
-    it.only("a filtered list is displayed", async () => {
+    it("a filtered list is displayed", async () => {
       api.loadData = jest.fn().mockReturnValue(data);
       render(
         <DataProvider>
@@ -79,7 +83,7 @@ describe("When Events is created", () => {
       // Assert the element is not in the document anymore
       await waitFor(() => {
         expect(screen.queryByText("Forum #productCON")).not.toBeInTheDocument();
-      }, 2000); // timeout de 2 secondes
+      });
     });
   });
 
