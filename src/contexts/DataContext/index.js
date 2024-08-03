@@ -19,24 +19,33 @@ export const api = {
 export const DataProvider = ({ children }) => {
   const [error, setError] = useState(null);
   const [data, setData] = useState(null);
+  const [last, setLast] = useState(null); // Ajoutez l'état pour 'last'
+
   const getData = useCallback(async () => {
     try {
-      setData(await api.loadData());
+      const loadedData = await api.loadData();
+      setData(loadedData);
+      // Mettez à jour 'last' avec la dernière prestation (ou événement)
+      if (loadedData.events && loadedData.events.length > 0) {
+        setLast(loadedData.events[loadedData.events.length - 1]); // Définir la dernière prestation
+      }
     } catch (err) {
       setError(err);
     }
   }, []);
+
   useEffect(() => {
     if (data) return;
     getData();
-  });
-  
+  }, [data, getData]); // Ajoutez 'getData' à la liste des dépendances
+
   return (
     <DataContext.Provider
       // eslint-disable-next-line react/jsx-no-constructed-context-values
       value={{
         data,
         error,
+        last, // Incluez 'last' dans le contexte
       }}
     >
       {children}
@@ -46,7 +55,7 @@ export const DataProvider = ({ children }) => {
 
 DataProvider.propTypes = {
   children: PropTypes.node.isRequired,
-}
+};
 
 export const useData = () => useContext(DataContext);
 
